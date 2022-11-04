@@ -1,22 +1,30 @@
-import { db } from "../connect.js"
+import { db } from "../db.js"
 import bcrypt from "bcryptjs"
 import jwt from 'jsonwebtoken'
-
+import {checkUserExit} from "../query/auth/checkUserExit"
+import {checkIsAdmin} from "../query/auth/checkIsAdmin"
+import {createNewUser} from "../query/auth/createNewUser"
+ 
 
 export const login =(req,res) => {
-
-  const q = "SELECT * FROM users WHERE email = ?"
-  
-  db.query(q, [req.body.email], (err, data)=> {
+  let isAdmin = false;
+  db.query(checkUserExit, [req.body.email], (err, data)=> {
+    userData = data[0];
     if(err) return res.status(500).json(err);
-    if(data.length === 0) return res.status(400).json("User not found");
+    if(!userData) return res.status(400).json("User not found");
 
-    const checkedPassword = bcrypt.compareSync(req.body.password, data[0].password);
+    const checkedPassword = bcrypt.compareSync(req.body.password, userData.password);
 
     if(!checkedPassword) return res.status(400).json("Wrong password or email")
-    const token = jwt.sign({id:data[0].id}, "secret key")
 
-    const {password, ...others} = data[0];
+    db.query(checkIsAdmin, [req.body.email, req.body.password], (err, data)=>{
+      if(data === 2){
+        isAdmin = true;
+      }
+    })
+    const token = jwt.sign({id:userData.id, isAdmin}, "secret key")
+
+    const {password, ...others} = userData;
 
     res.cookie("accessToken", token,{
       httpOnly: true
@@ -27,8 +35,8 @@ export const login =(req,res) => {
 }
 
 export const register =(req,res) => {
-    const q = "SELECT * FROM users WHERE email = ?"
-    db.query(q, [req.body.email], (err, data)=>{
+    
+    db.query(checkUserExit, [req.body.email], (err, data)=>{
         if(err) return res.status(500).json(err)
         if(data.length) return res.status(409).json("user email already exist")
     
@@ -36,15 +44,17 @@ export const register =(req,res) => {
       //hash password
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(req.body.password, salt)
-
-      const q = "INSERT INTO users (`email`, `password`,`name`) VALUE (?)"
-
+      
       const values = [
         req.body.email, 
-        hashedPassword, 
-        req.body.name]        
+        hashedPassword,
+        req.body.phoneNumber,
+        req.body.nationality,
+        req.body.fname,
+        req.body.lname,
+        0]        
 
-      db.query(q, [values], (err, data) => {
+      db.query(createNewUser, [values], (err, data) => {
         if (err) return res.status(500).json(err);
         return res.status(200).json("User created")
       });

@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 })
 app.use(express.json())
 app.use(cors({
-    origin: "http://localhost:3001",
+    origin: "http://localhost:5000",
 }));
 app.use(cookieParser())
 
@@ -22,6 +22,6 @@ app.use("/api/users", usersRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/exam", examRoutes);
 
-app.listen(3000,()=>{
+app.listen(5000,()=>{
     console.log("API working");
 });
