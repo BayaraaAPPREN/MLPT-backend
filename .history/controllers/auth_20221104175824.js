@@ -12,18 +12,18 @@ export const login = (req, res) => {
     console.log(userData.userId);
 
     if (err) return res.status(500).json(err);
-    if (!userData) return res.status(400).json("User not found");
+    // if (!userData ) return res.status(400).json("User not found");
 
     const checkedPassword = bcrypt.compareSync(
       req.body.password,
-      userData.Password
+      userData.password
     );
 
     if (!checkedPassword)
       return res.status(400).json("Wrong password or email");
 
     db.query(checkIsAdmin, [req.body.email, req.body.password], (err, data) => {
-      if (data === "2") {
+      if (data === 2) {
         isAdmin = true;
       }
     });

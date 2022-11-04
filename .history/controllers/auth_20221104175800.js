@@ -16,14 +16,14 @@ export const login = (req, res) => {
 
     const checkedPassword = bcrypt.compareSync(
       req.body.password,
-      userData.Password
+      userData.password
     );
 
     if (!checkedPassword)
       return res.status(400).json("Wrong password or email");
 
     db.query(checkIsAdmin, [req.body.email, req.body.password], (err, data) => {
-      if (data === "2") {
+      if (data === 2) {
         isAdmin = true;
       }
     });

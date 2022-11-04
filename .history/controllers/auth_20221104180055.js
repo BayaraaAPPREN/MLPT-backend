@@ -16,7 +16,7 @@ export const login = (req, res) => {
 
     const checkedPassword = bcrypt.compareSync(
       req.body.password,
-      userData.Password
+      userData.password
     );
 
     if (!checkedPassword)

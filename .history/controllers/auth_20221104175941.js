@@ -12,11 +12,11 @@ export const login = (req, res) => {
     console.log(userData.userId);
 
     if (err) return res.status(500).json(err);
-    if (!userData) return res.status(400).json("User not found");
+    // if (!userData ) return res.status(400).json("User not found");
 
     const checkedPassword = bcrypt.compareSync(
       req.body.password,
-      userData.Password
+      userData.password
     );
 
     if (!checkedPassword)

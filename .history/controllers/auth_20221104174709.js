@@ -1,4 +1,4 @@
-import db from "../db.js";
+import { db } from "../db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import checkUserExit from "../query/auth/checkUserExit.js";
@@ -8,22 +8,20 @@ import createNewUser from "../query/auth/createNewUser.js";
 export const login = (req, res) => {
   let isAdmin = false;
   db.query(checkUserExit, [req.body.email], (err, data) => {
-    const userData = data[0];
-    console.log(userData.userId);
-
+    userData = data[0];
     if (err) return res.status(500).json(err);
     if (!userData) return res.status(400).json("User not found");
 
     const checkedPassword = bcrypt.compareSync(
       req.body.password,
-      userData.Password
+      userData.password
     );
 
     if (!checkedPassword)
       return res.status(400).json("Wrong password or email");
 
     db.query(checkIsAdmin, [req.body.email, req.body.password], (err, data) => {
-      if (data === "2") {
+      if (data === 2) {
         isAdmin = true;
       }
     });
