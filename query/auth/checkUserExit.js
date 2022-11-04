@@ -1,0 +1,1 @@
+export const  q = "SELECT userId FROM User WHERE Email = ?"
