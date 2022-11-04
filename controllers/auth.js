@@ -52,7 +52,7 @@ export const register =(req,res) => {
         req.body.nationality,
         req.body.fname,
         req.body.lname,
-        0]        
+        0]
 
       db.query(createNewUser, [values], (err, data) => {
         if (err) return res.status(500).json(err);
