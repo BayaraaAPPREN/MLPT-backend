@@ -1,11 +1,9 @@
 import db from "../db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import {
-  checkUserExit,
-  checkIsAdmin,
-  createNewUser,
-} from "../query/auth/auth.js";
+import checkUserExit from "../query/auth/checkUserExit.js";
+import checkIsAdmin from "../query/auth/checkIsAdmin.js";
+import createNewUser from "../query/auth/createNewUser.js";
 
 export const login = (req, res) => {
   let isAdmin = false;
@@ -14,11 +12,11 @@ export const login = (req, res) => {
     console.log(userData.userId);
 
     if (err) return res.status(500).json(err);
-    if (!userData) return res.status(400).json("User not found");
+    // if (!userData ) return res.status(400).json("User not found");
 
     const checkedPassword = bcrypt.compareSync(
       req.body.password,
-      userData.Password
+      userData.password
     );
 
     if (!checkedPassword)

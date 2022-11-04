@@ -1,11 +1,9 @@
 import db from "../db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import {
-  checkUserExit,
-  checkIsAdmin,
-  createNewUser,
-} from "../query/auth/auth.js";
+import checkUserExit from "../query/auth/checkUserExit.js";
+import checkIsAdmin from "../query/auth/checkIsAdmin.js";
+import createNewUser from "../query/auth/createNewUser.js";
 
 export const login = (req, res) => {
   let isAdmin = false;
@@ -18,14 +16,14 @@ export const login = (req, res) => {
 
     const checkedPassword = bcrypt.compareSync(
       req.body.password,
-      userData.Password
+      userData.password
     );
 
     if (!checkedPassword)
       return res.status(400).json("Wrong password or email");
 
     db.query(checkIsAdmin, [req.body.email, req.body.password], (err, data) => {
-      if (data === "2") {
+      if (data === 2) {
         isAdmin = true;
       }
     });

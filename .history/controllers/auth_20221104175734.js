@@ -1,11 +1,9 @@
 import db from "../db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import {
-  checkUserExit,
-  checkIsAdmin,
-  createNewUser,
-} from "../query/auth/auth.js";
+import checkUserExit from "../query/auth/checkUserExit.js";
+import checkIsAdmin from "../query/auth/checkIsAdmin.js";
+import createNewUser from "../query/auth/createNewUser.js";
 
 export const login = (req, res) => {
   let isAdmin = false;
@@ -13,32 +11,33 @@ export const login = (req, res) => {
     const userData = data[0];
     console.log(userData.userId);
 
-    if (err) return res.status(500).json(err);
-    if (!userData) return res.status(400).json("User not found");
+    //   let userData = data[0];
+    //   if (err) return res.status(500).json(err);
+    //   if (!userData) return res.status(400).json("User not found");
 
-    const checkedPassword = bcrypt.compareSync(
-      req.body.password,
-      userData.Password
-    );
+    //   const checkedPassword = bcrypt.compareSync(
+    //     req.body.password,
+    //     userData.password
+    //   );
 
-    if (!checkedPassword)
-      return res.status(400).json("Wrong password or email");
+    //   if (!checkedPassword)
+    //     return res.status(400).json("Wrong password or email");
 
-    db.query(checkIsAdmin, [req.body.email, req.body.password], (err, data) => {
-      if (data === "2") {
-        isAdmin = true;
-      }
-    });
-    const token = jwt.sign({ id: userData.id, isAdmin }, "secret key");
+    //   db.query(checkIsAdmin, [req.body.email, req.body.password], (err, data) => {
+    //     if (data === 2) {
+    //       isAdmin = true;
+    //     }
+    //   });
+    //   const token = jwt.sign({ id: userData.id, isAdmin }, "secret key");
 
-    const { password, ...others } = userData;
+    //   const { password, ...others } = userData;
 
-    res
-      .cookie("accessToken", token, {
-        httpOnly: true,
-      })
-      .status(200)
-      .json(others);
+    //   res
+    //     .cookie("accessToken", token, {
+    //       httpOnly: true,
+    //     })
+    //     .status(200)
+    //     .json(others);
   });
 };
 
