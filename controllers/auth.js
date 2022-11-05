@@ -1,17 +1,12 @@
 import db from "../db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import {
-  checkUserExit,
-  checkIsAdmin,
-  createNewUser,
-} from "../query/auth/auth.js";
+import { checkUserExit, createNewUser } from "../query/auth/auth.js";
 
 export const login = (req, res) => {
   let isAdmin = false;
   db.query(checkUserExit, [req.body.email], (err, data) => {
     const userData = data[0];
-    console.log(userData.userId);
 
     if (err) return res.status(500).json(err);
     if (!userData) return res.status(400).json("User not found");
@@ -23,13 +18,9 @@ export const login = (req, res) => {
 
     if (!checkedPassword)
       return res.status(400).json("Wrong password or email");
-
-    db.query(checkIsAdmin, [req.body.email, req.body.password], (err, data) => {
-      if (data === "2") {
-        isAdmin = true;
-      }
-    });
-    const token = jwt.sign({ id: userData.id, isAdmin }, "secret key");
+    if (userData.type === 2) isAdmin = true;
+    const token = jwt.sign({ id: userData.userId, isAdmin }, "secret key");
+    console.log(token);
 
     const { password, ...others } = userData;
 
