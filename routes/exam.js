@@ -1,8 +1,8 @@
 import express from "express";
-import { } from "../controllers/exam.js";
+import {getAllExam } from "../controllers/exam.js";
 
 const router = express.Router();
 
-router.get("",);
+router.get("/getAllExamList",getAllExam);
 
 export default router
