@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(
   cors({
-    origin:"https://mlpt.vercel.app",
+    origin:"https://mlpt-backend.vercel.app",
   })
 );
 app.use(cookieParser());
