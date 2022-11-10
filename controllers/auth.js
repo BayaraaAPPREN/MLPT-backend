@@ -46,7 +46,7 @@ export const register = (req, res) => {
     const values = [
       req.body.email,
       hashedPassword,
-      req.body.phoneNum,
+      req.body.phoneNo,
       req.body.nationality,
       req.body.fname,
       req.body.lname,
